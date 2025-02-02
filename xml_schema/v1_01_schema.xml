@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<instrumentationManifest xsi:schemaLocation="http://schemas.microsoft.com/win/2004/08/events eventman.xsd"
+                         xmlns="http://schemas.microsoft.com/win/2004/08/events"
+                         xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events"
+                         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                         xmlns:trace="http://schemas.microsoft.com/win/2004/08/events/trace">
+    <instrumentation>
+        <events>
+            <provider name="Microsoft-Windows-Sysmon"
+                      guid="{5770385F-C22A-43E0-BF4C-06F5698FFBD9}"
+                      symbol="SYSMON_PROVIDER"
+                      resourceFileName="%filename%"
+                      messageFileName="%filename%">
+                <events>
+                    <event symbol="SYSMON_ERROR_EVENT"
+                           value="255"
+                           version="1"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Error"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="Error report"
+                           message="$(string.event.str_SYSMON_ERROR)" />
+                    <event symbol="SYSMON_CREATE_PROCESS_EVENT"
+                           value="1"
+                           version="3"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Informational"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="Process Create"
+                           message="$(string.event.str_SYSMON_CREATE_PROCESS)" />
+                    <event symbol="SYSMON_FILE_TIME_EVENT"
+                           value="2"
+                           version="2"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Informational"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="File creation time changed"
+                           message="$(string.event.str_SYSMON_FILE_TIME)" />
+                    <event symbol="SYSMON_NETWORK_CONNECT_EVENT"
+                           value="3"
+                           version="3"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Informational"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="Network connection detected"
+                           message="$(string.event.str_SYSMON_NETWORK_CONNECT)" />
+                    <event symbol="SYSMON_SERVICE_STATE_CHANGE_EVENT"
+                           value="4"
+                           version="1"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Informational"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="Sysmon service state changed"
+                           message="$(string.event.str_SYSMON_SERVICE_STATE_CHANGE)" />
+                    <event symbol="SYSMON_FILE_DELETE_EVENT"
+                           value="61441"
+                           version="3"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Informational"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="File Delete"
+                           message="$(string.event.str_SYSMON_FILE_DELETE)" />
+                    <event symbol="SYSMON_CLIPBOARD_EVENT"
+                           value="61442"
+                           version="3"
+                           channel="Microsoft-Windows-Sysmon/Operational"
+                           level="win:Informational"
+                           task="SysmonTask"
+                           opcode="win:Info"
+                           template="Clipboard changed"
+                           message="$(string.event.str_SYSMON_CLIPBOARD)" />
+                </events>
+                <levels />
+                <tasks>
+                    <task name="SysmonTask"
+                          symbol="SYSMON_TASK"
+                          value="1"
+                          eventGUID="{C511FFB3-9FBF-45F5-A97B-9BEEFCB2071B}" />
+                </tasks>
+                <opcodes />
+                <channels>
+                    <channel name="Microsoft-Windows-Sysmon/Operational"
+                             chid="c1"
+                             symbol="SYSMON_CHANNEL"
+                             type="Operational"
+                             enabled="true" />
+                </channels>
+                <templates>
+                    <template tid="Error report">
+                        <data name="ID"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Description"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                    <template tid="Process Create">
+                        <data name="UtcTime"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ProcessGuid"
+                              inType="win:GUID" />
+                        <data name="ProcessId"
+                              inType="win:UInt32"
+                              outType="win:PID" />
+                        <data name="Image"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="CommandLine"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="User"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="LogonGuid"
+                              inType="win:GUID" />
+                        <data name="LogonId"
+                              inType="win:HexInt64" />
+                        <data name="TerminalSessionId"
+                              inType="win:UInt32" />
+                        <data name="IntegrityLevel"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="HashType"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Hash"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ParentProcessGuid"
+                              inType="win:GUID" />
+                        <data name="ParentProcessId"
+                              inType="win:UInt32"
+                              outType="win:PID" />
+                        <data name="ParentImage"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ParentCommandLine"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                    <template tid="File creation time changed">
+                        <data name="UtcTime"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ProcessGuid"
+                              inType="win:GUID" />
+                        <data name="ProcessId"
+                              inType="win:UInt32"
+                              outType="win:PID" />
+                        <data name="Image"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="TargetFilename"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="CreationUtcTime"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="PreviousCreationUtcTime"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                    <template tid="Network connection detected">
+                        <data name="UtcTime"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ProcessGuid"
+                              inType="win:GUID" />
+                        <data name="ProcessId"
+                              inType="win:UInt32"
+                              outType="win:PID" />
+                        <data name="Image"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="User"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Protocol"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Initiated"
+                              inType="win:Boolean" />
+                        <data name="SourceIsIpv6"
+                              inType="win:Boolean" />
+                        <data name="SourceIp"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="SourceHostname"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="SourcePort"
+                              inType="win:UInt16" />
+                        <data name="SourcePortName"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="DestinationIsIpv6"
+                              inType="win:Boolean" />
+                        <data name="DestinationIp"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="DestinationHostname"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="DestinationPort"
+                              inType="win:UInt16" />
+                        <data name="DestinationPortName"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                    <template tid="Sysmon service state changed">
+                        <data name="State"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                    <template tid="File Delete">
+                        <data name="UtcTime"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ProcessGuid"
+                              inType="win:GUID" />
+                        <data name="ProcessId"
+                              inType="win:UInt32"
+                              outType="win:PID" />
+                        <data name="Image"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="TargetFilename"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="HashType"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Hash"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Archived"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                    <template tid="Clipboard changed">
+                        <data name="ProcessGuid"
+                              inType="win:GUID" />
+                        <data name="ProcessId"
+                              inType="win:UInt32"
+                              outType="win:PID" />
+                        <data name="Image"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Session"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="ClientInfo"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="HashType"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Hash"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                        <data name="Archived"
+                              inType="win:UnicodeString"
+                              outType="xs:string" />
+                    </template>
+                </templates>
+            </provider>
+        </events>
+    </instrumentation>
+    <localization>
+        <resources culture="en-US">
+            <stringTable>
+                <string id="opcode.Info"
+                        value="Info" />
+                <string id="level.Informational"
+                        value="Information" />
+                <string id="level.Error"
+                        value="Error" />
+                <string id="event.str_SYSMON_ERROR"
+                        value="Error report:%nID: %1!S!%nDescription: %2!S!" />
+                <string id="event.str_SYSMON_CREATE_PROCESS"
+                        value="Process Create:%nUtcTime: %1!S!%nProcessGuid: %2!S!%nProcessId: %3!S!%nImage: %4!S!%nCommandLine: %5!S!%nUser: %6!S!%nLogonGuid: %7!S!%nLogonId: %8!S!%nTerminalSessionId: %9!S!%nIntegrityLevel: %10!S!%nHashType: %11!S!%nHash: %12!S!%nParentProcessGuid: %13!S!%nParentProcessId: %14!S!%nParentImage: %15!S!%nParentCommandLine: %16!S!" />
+                <string id="event.str_SYSMON_FILE_TIME"
+                        value="File creation time changed:%nUtcTime: %1!S!%nProcessGuid: %2!S!%nProcessId: %3!S!%nImage: %4!S!%nTargetFilename: %5!S!%nCreationUtcTime: %6!S!%nPreviousCreationUtcTime: %7!S!" />
+                <string id="event.str_SYSMON_NETWORK_CONNECT"
+                        value="Network connection detected:%nUtcTime: %1!S!%nProcessGuid: %2!S!%nProcessId: %3!S!%nImage: %4!S!%nUser: %5!S!%nProtocol: %6!S!%nInitiated: %7!S!%nSourceIsIpv6: %8!S!%nSourceIp: %9!S!%nSourceHostname: %10!S!%nSourcePort: %11!S!%nSourcePortName: %12!S!%nDestinationIsIpv6: %13!S!%nDestinationIp: %14!S!%nDestinationHostname: %15!S!%nDestinationPort: %16!S!%nDestinationPortName: %17!S!" />
+                <string id="event.str_SYSMON_SERVICE_STATE_CHANGE"
+                        value="Sysmon service state changed:%nState: %1!S!" />
+                <string id="event.str_SYSMON_FILE_DELETE"
+                        value="File Delete:%nUtcTime: %1!S!%nProcessGuid: %2!S!%nProcessId: %3!S!%nImage: %4!S!%nTargetFilename: %5!S!%nHashType: %6!S!%nHash: %7!S!%nArchived: %8!S!" />
+                <string id="event.str_SYSMON_CLIPBOARD"
+                        value="Clipboard changed:%nProcessGuid: %1!S!%nProcessId: %2!S!%nImage: %3!S!%nSession: %4!S!%nClientInfo: %5!S!%nHashType: %6!S!%nHash: %7!S!%nArchived: %8!S!" />
+            </stringTable>
+        </resources>
+    </localization>
+</instrumentationManifest>
