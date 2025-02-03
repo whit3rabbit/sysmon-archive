@@ -3,75 +3,41 @@
            elementFormDefault="qualified"
            attributeFormDefault="unqualified">
 
-    <!-- ========================= Manifest Root Element and Type ========================= -->
     <xs:element name="manifest" type="manifestType"/>
-    <!-- Root element of the manifest file.
-         This manifest seems to define the structure for Sysmon *options* and *events* metadata
-         used by Sysmon, separate from the Sysmon configuration file that defines filtering rules. -->
 
     <xs:complexType name="manifestType">
-        <!-- Defines the structure of the <manifest> element.
-             Contains configuration options metadata and event definitions. -->
         <xs:sequence>
             <xs:element name="configuration" type="configurationType"/>
-            <!-- Defines the <configuration> section for options metadata. -->
             <xs:element name="events" type="eventsType"/>
-            <!-- Defines the <events> section for event definitions. -->
         </xs:sequence>
-        <xs:attribute name="schemaversion" type="xs:decimal" use="required" fixed="4.90"/>
-        <!-- Required attribute: Schema version of the manifest (fixed to 4.90).
-             This version is for the manifest schema itself, independent of the Sysmon binary version. -->
-        <xs:attribute name="binaryversion" type="xs:decimal" use="required" fixed="18"/>
-        <!-- Required attribute: Binary version of Sysmon this manifest is for (fixed to 18).
-             Indicates the Sysmon binary version this manifest is designed to be compatible with. -->
+        <xs:attribute name="schemaversion" type="xs:decimal" use="required" fixed="4.70"/>
+        <xs:attribute name="binaryversion" type="xs:decimal" use="required"/>
     </xs:complexType>
 
-    <!-- ========================= Configuration Section ========================= -->
     <xs:complexType name="configurationType">
-        <!-- Defines the structure of the <configuration> element.
-             Contains metadata about Sysmon command-line options and filter conditions. -->
         <xs:sequence>
             <xs:element name="options" type="optionsType"/>
-            <!-- Defines the <options> element, listing available command-line options for Sysmon. -->
             <xs:element name="filters" type="xs:string"/>
-            <!-- String element listing available filter conditions.
-                 Likely used for UI display or documentation purposes, listing conditions like:
-                 "is, is not, contains, contains any, is any, contains all, excludes, excludes any, excludes all, begin with, not begin with, end with, not end with, less than, more than, image" -->
         </xs:sequence>
     </xs:complexType>
 
-    <!-- ========================= Options Section ========================= -->
     <xs:complexType name="optionsType">
-        <!-- Defines the structure of the <options> element, containing multiple <option> elements.
-             Each <option> element describes a Sysmon command-line option. -->
         <xs:sequence>
             <xs:element name="option" type="optionType" maxOccurs="unbounded"/>
-            <!-- Allows multiple <option> elements, one for each command-line option. -->
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="optionType">
-        <!-- Defines the structure of a single <option> element.
-             Describes a specific Sysmon command-line option and its properties. -->
         <xs:attribute name="switch" type="xs:string" use="required"/>
-        <!-- Required attribute: Command-line switch for the option (e.g., "i", "c", "u", "a", "dns"). -->
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <!-- Required attribute: Name of the option (e.g., "Install", "Configuration", "ArchiveDirectory", "DnsQuery"). -->
         <xs:attribute name="argument" type="argumentType" use="required"/>
-        <!-- Required attribute: Specifies if the option takes an argument (optional, none, required). -->
         <xs:attribute name="noconfig" type="xs:boolean" use="optional"/>
-        <!-- Optional attribute: Indicates if the option is command-line only and not configurable in XML (true if command-line only). -->
         <xs:attribute name="exclusive" type="xs:boolean" use="optional"/>
-        <!-- Optional attribute: Indicates if the option is exclusive (cannot be used with other exclusive options). -->
         <xs:attribute name="rule" type="xs:boolean" use="optional"/>
-        <!-- Optional attribute: Indicates if the option is related to a filtering rule (true if it enables/configures a filtering rule). -->
         <xs:attribute name="forceconfig" type="xs:boolean" use="optional"/>
-        <!-- Optional attribute: Indicates if the option forces a specific configuration (true if it forces a configuration setting). -->
     </xs:complexType>
 
     <xs:simpleType name="argumentType">
-        <!-- Defines the allowed values for the 'argument' attribute of <option>.
-             Specifies whether a command-line option requires, allows, or forbids an argument. -->
         <xs:restriction base="xs:string">
             <xs:enumeration value="optional"/>
             <xs:enumeration value="none"/>
@@ -80,49 +46,26 @@
     </xs:simpleType>
 
 
-    <!-- ========================= Events Section ========================= -->
     <xs:complexType name="eventsType">
-        <!-- Defines the structure of the <events> element, containing multiple <event> elements.
-             Each <event> element defines metadata for a specific Sysmon event type (Event ID). -->
         <xs:sequence>
             <xs:element name="event" type="eventType" maxOccurs="unbounded"/>
-            <!-- Allows multiple <event> elements, one for each Sysmon event type. -->
         </xs:sequence>
-    </xs:complexType>
+    </xs.complexType>
 
     <xs:complexType name="eventType">
-        <!-- Defines the structure of a single <event> element.
-             Describes a specific Sysmon event type, including its data fields and metadata. -->
         <xs:sequence>
             <xs:element name="data" type="dataType" maxOccurs="unbounded"/>
-            <!-- Allows multiple <data> elements within an event, describing the data fields included in the event log. -->
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <!-- Required attribute: Name of the event (e.g., "SYSMONEVENT_ERROR", "SYSMONEVENT_CREATE_PROCESS").
-             Corresponds to the event name used in Sysmon event logs. -->
         <xs:attribute name="value" type="xs:unsignedByte" use="required"/>
-        <!-- Required attribute: Event ID value (unsigned byte).
-             Corresponds to the Event ID number in Sysmon event logs (e.g., 255 for Error, 1 for Process Create). -->
         <xs:attribute name="level" type="xs:string" use="required"/>
-        <!-- Required attribute: Event level (e.g., "Error", "Informational").
-             Indicates the severity level of the event. -->
         <xs:attribute name="template" type="xs:string" use="required"/>
-        <!-- Required attribute: Event template name (e.g., "Error report", "Process Create", "Network connection detected").
-             Descriptive template name for the event, as seen in Event Viewer. -->
         <xs:attribute name="version" type="xs:unsignedByte" use="required"/>
-        <!-- Required attribute: Event version (unsigned byte).
-             Version number of the event definition, incremented when event structure changes. -->
         <xs:attribute name="rulename" type="xs:string" use="optional"/>
-        <!-- Optional attribute: Rule name associated with the event (e.g., "ProcessCreate", "NetworkConnect").
-             Used to link events to filtering rules defined in the Sysmon configuration. -->
         <xs:attribute name="ruledefault" type="ruleDefaultType" use="optional"/>
-        <!-- Optional attribute: Default rule action (include/exclude) for this event type.
-             Specifies the default behavior if no specific rule matches this event type. -->
     </xs:complexType>
 
     <xs:simpleType name="ruleDefaultType">
-        <!-- Defines the allowed values for the 'ruledefault' attribute of <event>.
-             Specifies whether the default action for an event type should be to include or exclude events. -->
         <xs:restriction base="xs:string">
             <xs:enumeration value="include"/>
             <xs:enumeration value="exclude"/>
@@ -130,144 +73,63 @@
     </xs:simpleType>
 
     <xs:complexType name="dataType">
-        <!-- Defines the structure of a <data> element within an <event>, describing a data field.
-             Each <data> element defines a specific data field within a Sysmon event. -->
         <xs:attribute name="name" type="xs:string" use="required"/>
-        <!-- Required attribute: Name of the data field (e.g., "UtcTime", "ProcessGuid", "Image").
-             Corresponds to the data field name in the Sysmon event log. -->
         <xs:attribute name="inType" type="xs:string" use="required"/>
-        <!-- Required attribute: Data type as defined in the event manifest (e.g., "win:UnicodeString", "win:GUID", "win:UInt32").
-             Specifies the Windows Eventing data type of the field. -->
         <xs:attribute name="outType" type="xs:string" use="optional"/>
-        <!-- Optional attribute: Data type for output/schema (e.g., "xs:string", "win:PID").
-             Provides a more general data type for schema purposes, potentially mapping Windows Eventing types to XML Schema types. -->
     </xs:complexType>
 
 
-    <!-- ========================= Sysmon v4.90 Events (Sysmon Configuration Section) ========================= -->
-    <!-- This section defines the structure for Sysmon filtering configuration, corresponding to the DTD's <Sysmon> element.
-         This is the part of the XSD that defines the schema for Sysmon configuration files used with `-i` or `-c` options. -->
+    <!-- Sysmon v4.70 Events -->
 
     <xs:element name="Sysmon" type="SysmonFilterConfigType"/>
-    <!-- Root element for Sysmon filter configuration XML (different from <manifest> root).
-         This is the root element for Sysmon configuration files, as seen in the example:
-         `<Sysmon schemaversion="4.82"> ... </Sysmon>` -->
 
     <xs:complexType name="SysmonFilterConfigType">
-        <!-- Defines the structure of the <Sysmon> element for filter configuration.
-             Contains configuration entries and the EventFiltering section. -->
         <xs:sequence>
             <xs:element name="EventFiltering" type="EventFilteringType" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Configuration for event filtering rules.
-                 Contains <RuleGroup> or individual event filter definitions (e.g., <ProcessCreate>, <NetworkConnect>). -->
             <xs:element name="ArchiveDirectory" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Archive directory path for deleted files (using FileDelete event). Default: "Sysmon" in volume roots.
-                 Configuration Entry: ArchiveDirectory -->
             <xs:element name="CaptureClipboard" type="CheckRevocationType" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Enable/disable clipboard capture (using ClipboardChange event).
-                 Command-line switch: -z ClipboardInstance (Manifest option)
-                 Configuration Entry: N/A (Likely controlled via manifest options) -->
             <xs:element name="DriverName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Uses specified name for driver and service images.
-                 Configuration Entry: DriverName -->
             <xs:element name="PipeMonitoringConfig" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Pipe monitoring configuration (details not specified in documentation).
-                 Configuration Entry: PipeMonitoringConfig -->
             <xs:element name="HashAlgorithms" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: List of hash algorithms to apply for hashing (e.g., "*", "MD5,SHA256"). Default: SHA1.
-                 Configuration Entry: HashAlgorithms -->
             <xs:element name="DnsLookup" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Controls reverse DNS lookup for network connection events. Default: True.
-                 Configuration Entry: DnsLookup -->
             <xs:element name="ProcessAccessConfig" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Process access configuration (details not specified in documentation).
-                 Configuration Entry: ProcessAccessConfig -->
             <xs:element name="CheckRevocation" type="CheckRevocationType" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Certificate revocation checking configuration for signatures. Default: True.
-                 Configuration Entry: CheckRevocation -->
-            <xs:element name="FieldSizes" type="xs:string" minOccurs="0" maxOccurs="1"/>
-            <!-- Optional: Configuration for field size limits (details not specified in documentation).
-                 Configuration Entry: FieldSizes -->
         </xs:sequence>
         <xs:attribute name="schemaversion" type="xs:decimal" use="required"/>
-        <!-- Required attribute: Schema version for Sysmon configuration.
-             This version is for the Sysmon configuration schema itself, as seen in `<Sysmon schemaversion="4.82">`. -->
     </xs:complexType>
 
     <xs:complexType name="EventFilteringType">
-        <!-- Defines the structure of the <EventFiltering> element.
-             Contains either RuleGroups or individual event filter definitions. -->
         <xs:choice minOccurs="0" maxOccurs="1">
-            <!-- Choice between RuleGroup(s) OR individual event filter definitions.
-                 You can either have multiple RuleGroups OR a sequence of individual event filters, but not both directly under <EventFiltering>. -->
             <xs:element name="RuleGroup" type="RuleGroupType" minOccurs="0" maxOccurs="unbounded"/>
-            <!-- Allows multiple RuleGroup elements to group rules with AND/OR logic. -->
             <xs:sequence>
-                <!-- Sequence of individual event filter elements.
-                     If not using RuleGroups, you can define individual filters directly under <EventFiltering>. -->
                 <xs:element name="ProcessCreate" type="ProcessCreateFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Process Create Events (Event ID 1). -->
                 <xs:element name="FileCreateTime" type="FileCreateTimeFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Creation Time Change Events (Event ID 2). -->
                 <xs:element name="NetworkConnect" type="NetworkConnectFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Network Connection Events (Event ID 3). -->
                 <xs:element name="ProcessTerminate" type="ProcessTerminateFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Process Terminate Events (Event ID 5). -->
                 <xs:element name="DriverLoad" type="DriverLoadFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Driver Load Events (Event ID 6). -->
                 <xs:element name="ImageLoad" type="ImageLoadFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Image Load Events (Event ID 7). -->
                 <xs:element name="CreateRemoteThread" type="CreateRemoteThreadFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Create Remote Thread Events (Event ID 8). -->
                 <xs:element name="RawAccessRead" type="RawAccessReadFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Raw Access Read Events (Event ID 9). -->
                 <xs:element name="ProcessAccess" type="ProcessAccessFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Process Access Events (Event ID 10). -->
                 <xs:element name="FileCreate" type="FileCreateFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Create Events (Event ID 11). -->
                 <xs:element name="RegistryEvent" type="RegistryEventFilterType" minOccurs="0" maxOccurs="3"/>
-                <!-- Filter for Registry Events (Object create/delete/value set/rename - Event IDs 12, 13, 14).
-                     Allows up to 3 RegistryEvent elements, likely to handle different Registry Event types (though documentation groups them). -->
                 <xs:element name="FileCreateStreamHash" type="FileCreateStreamHashFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Create Stream Hash Events (Event ID 15). -->
                 <xs:element name="PipeEvent" type="PipeEventFilterType" minOccurs="0" maxOccurs="2"/>
-                <!-- Filter for Pipe Events (Pipe Created/Connected - Event IDs 17, 18).
-                     Allows up to 2 PipeEvent elements, likely to handle different Pipe Event types. -->
                 <xs:element name="WmiEventFilter" type="WmiEventFilterFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for WMI Event Filter Activity Events (Event ID 19). -->
                 <xs:element name="WmiEventConsumer" type="WmiEventConsumerFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for WMI Event Consumer Activity Events (Event ID 20). -->
                 <xs:element name="WmiEventBinding" type="WmiEventBindingFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for WMI Event Consumer to Filter Binding Events (Event ID 21). -->
                 <xs:element name="DnsQuery" type="DnsQueryFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for DNS Query Events (Event ID 22). -->
                 <xs:element name="FileDelete" type="FileDeleteFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Delete Archived Events (Event ID 23). -->
                 <xs:element name="ClipboardChange" type="ClipboardChangeFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Clipboard Change Events (Event ID 24). -->
                 <xs:element name="ProcessTampering" type="ProcessTamperingFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for Process Tampering Events (Event ID 25). -->
                 <xs:element name="FileDeleteDetected" type="FileDeleteDetectedFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Delete Detected Events (Event ID 26). -->
-                <xs:element name="FileBlockExecutable" type="FileBlockExecutableFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Block Executable Events (Event ID 27). -->
-                <xs:element name="FileBlockShredding" type="FileBlockShreddingFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Block Shredding Events (Event ID 28). -->
-                <xs:element name="FileExecutableDetected" type="FileExecutableDetectedFilterType" minOccurs="0" maxOccurs="1"/>
-                <!-- Filter for File Executable Detected Events (Event ID 29). -->
             </xs:sequence>
         </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="RuleGroupType">
-        <!-- Defines the structure of the <RuleGroup> element, allowing grouping of rules and event filters.
-             RuleGroups allow you to combine rules with "and" or "or" logic for more complex filtering. -->
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <!-- Choice between Rule elements OR individual event filter definitions within the group.
-                 Within a RuleGroup, you can have multiple <Rule> elements OR directly define event filters (e.g., <ProcessCreate>, <NetworkConnect>)
-                 to apply to the group. -->
             <xs:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded"/>
-            <!-- Allows multiple Rule elements within the group. Rules within a RuleGroup are combined based on 'groupRelation' attribute of RuleGroup. -->
             <xs:element name="ProcessCreate" type="ProcessCreateFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="FileCreateTime" type="FileCreateTimeFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="NetworkConnect" type="NetworkConnectFilterType" minOccurs="0" maxOccurs="1"/>
@@ -279,10 +141,8 @@
             <xs:element name="ProcessAccess" type="ProcessAccessFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="FileCreate" type="FileCreateFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="RegistryEvent" type="RegistryEventFilterType" minOccurs="0" maxOccurs="3"/>
-            <!-- Allows up to 3 RegistryEvent elements within a RuleGroup, consistent with DTD. -->
             <xs:element name="FileCreateStreamHash" type="FileCreateStreamHashFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="PipeEvent" type="PipeEventFilterType" minOccurs="0" maxOccurs="2"/>
-            <!-- Allows up to 2 PipeEvent elements within a RuleGroup, consistent with DTD. -->
             <xs:element name="WmiEventFilter" type="WmiEventFilterFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="WmiEventConsumer" type="WmiEventConsumerFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="WmiEventBinding" type="WmiEventBindingFilterType" minOccurs="0" maxOccurs="1"/>
@@ -291,15 +151,8 @@
             <xs:element name="ClipboardChange" type="ClipboardChangeFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ProcessTampering" type="ProcessTamperingFilterType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="FileDeleteDetected" type="FileDeleteDetectedFilterType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="FileBlockExecutable" type="FileBlockExecutableFilterType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="FileBlockShredding" type="FileBlockShreddingFilterType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="FileExecutableDetected" type="FileExecutableDetectedFilterType" minOccurs="0" maxOccurs="1"/>
         </xs:choice>
         <xs:attribute name="groupRelation" use="required">
-            <!-- Required attribute: Defines the relation within the RuleGroup (and/or).
-                 Specifies how rules or filters within this group are combined:
-                 "and": All conditions within the group must be met.
-                 "or":  At least one condition within the group must be met. -->
             <xs:simpleType>
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="and"/>
@@ -308,17 +161,10 @@
             </xs:simpleType>
         </xs:attribute>
         <xs:attribute name="name" type="xs:string" use="optional"/>
-        <!-- Optional attribute: Name of the RuleGroup for identification and organization. -->
     </xs:complexType>
 
     <xs:complexType name="RuleType">
-        <!-- Defines the structure of a <Rule> element, containing condition elements for various event properties.
-             Rules are used to define specific conditions for filtering events. -->
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <!-- Choice of condition elements for different event properties.
-                 Within a Rule, you can have multiple condition elements. Conditions within a rule are combined with OR logic by default,
-                 unless overridden by the 'groupRelation' attribute of the Rule itself. -->
-            <!-- Process Create Event Properties -->
             <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
@@ -341,14 +187,11 @@
             <xs:element name="ParentProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ParentImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ParentCommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ParentUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- File Create Time Event Properties -->
             <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="PreviousCreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- Network Connect Event Properties -->
             <xs:element name="Protocol" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Initiated" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="SourceIsIpv6" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
@@ -362,13 +205,11 @@
             <xs:element name="DestinationPort" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="DestinationPortName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- Driver Load / Image Load Event Properties -->
             <xs:element name="ImageLoaded" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Signed" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Signature" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="SignatureStatus" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- Create Remote Thread Event Properties -->
             <xs:element name="SourceProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="SourceProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="SourceImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
@@ -379,64 +220,50 @@
             <xs:element name="StartAddress" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="StartModule" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="StartFunction" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="SourceUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="TargetUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- Raw Access Read Event Properties -->
             <xs:element name="Device" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Reusing User, but context is RawAccessRead -->
 
-            <!-- Process Access Event Properties -->
             <xs:element name="SourceProcessGUID" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="SourceThreadId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="TargetProcessGUID" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="GrantedAccess" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="CallTrace" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- Registry Event Properties -->
             <xs:element name="EventType" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="TargetObject" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Details" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="NewName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- File Create Stream Hash Event Properties -->
             <xs:element name="Hash" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="PipeName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Reusing PipeName, but context is FileCreateStreamHash -->
+            <xs:element name="PipeName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Contents" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- WMI Event Properties -->
             <xs:element name="Operation" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="EventNamespace" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Name" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Reusing Name, but context is WMI Event -->
+            <xs:element name="Name" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Query" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Type" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>  <!-- Reusing Type, but context is WMI Event -->
+            <xs:element name="Type" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Destination" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Consumer" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Filter" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- DNS Query Event Properties -->
             <xs:element name="QueryName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="QueryStatus" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="QueryResults" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
 
-            <!-- File Delete Event Properties -->
             <xs:element name="Archived" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Session" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Reusing Session, but context is ClipboardChange -->
-            <xs:element name="ClientInfo" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Reusing ClientInfo, but context is ClipboardChange -->
-            <xs:element name="Path" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Placeholder - 'Path' not explicitly in event types but might be intended for file operations -->
+            <xs:element name="Session" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ClientInfo" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Path" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="IsExecutable" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ClipboardText" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Placeholder - 'ClipboardText' not explicitly in event types, maybe for ClipboardChange -->
-            <xs:element name="ProcessAccessMask" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Placeholder - 'ProcessAccessMask' not explicitly in event types, maybe for ProcessAccess/Tampering -->
-            <xs:element name="TargetProcessCommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Placeholder - 'TargetProcessCommandLine' not explicitly in event types, maybe for ProcessTampering/Access -->
-            <xs:element name="SourceProcessName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Placeholder - 'SourceProcessName' not explicitly in event types, could be useful generally -->
-            <xs:element name="TargetProcessName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Placeholder - 'TargetProcessName' not explicitly in event types, could be useful generally -->
+            <xs:element name="ClipboardText" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- Not in DTD, assuming for ClipboardChange -->
+            <xs:element name="ProcessAccessMask" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- For ProcessTampering -->
+            <xs:element name="TargetProcessCommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- For ProcessTampering, based on community feedback for v4.70 -->
+            <xs:element name="SourceProcessName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- For ProcessAccess, based on community feedback for v4.70 -->
+            <xs:element name="TargetProcessName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- For ProcessAccess, based on community feedback for v4.70 -->
 
         </xs:choice>
-        <xs:attribute name="groupRelation" type="xs:string" use="optional">
-            <!-- Optional attribute: Relation within the Rule (and/or) if multiple conditions are present.
-                 Specifies how conditions within this rule are combined, overriding the default OR behavior:
-                 "and": All conditions within the rule must be met.
-                 "or":  At least one condition within the rule must be met (default behavior if not specified). -->
+        <xs:attribute name="groupRelation" type="xs:string" use="optional"> <!-- Even though DTD has it, semantically might be incorrect for Rule -->
             <xs:simpleType>
                 <xs:restriction base="xs:string">
                     <xs:enumeration value="and"/>
@@ -445,24 +272,13 @@
             </xs:simpleType>
         </xs:attribute>
         <xs:attribute name="name" type="xs:string" use="optional"/>
-        <!-- Optional attribute: Name of the Rule for identification and organization. -->
     </xs:complexType>
 
 
-    <!-- ========================= Filter Types for each event ========================= -->
-    <!-- These complex types define the structure for specific event filter elements (e.g., <ProcessCreate>, <NetworkConnect>).
-         Each filter type corresponds to a Sysmon event ID and allows defining rules and conditions for filtering that specific event type. -->
-    <!-- Each filter type can contain <Rule> elements and specific condition elements for that event type. -->
-
+    <!-- Filter Types for each event -->
     <xs:complexType name="ProcessCreateFilterType">
-        <!-- Filter type for Process Create events (Event ID 1).
-             Used under <EventFiltering> or <RuleGroup> to define filters for Process Create events. -->
         <xs:sequence>
             <xs:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded"/>
-            <!-- Allows multiple Rule elements within this filter. Rules are combined based on 'onmatch' and 'default' attributes of the filter. -->
-            <!-- Condition elements specific to Process Create event (same as in RuleType choice for Process Create section).
-                 These elements define the properties of a Process Create event that can be filtered on.
-                 Rules within a filter tag with the same field name behave as OR conditions, and rules with different field names behave as AND conditions. -->
             <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
@@ -485,19 +301,10 @@
             <xs:element name="ParentProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ParentImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ParentCommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ParentUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
-        <!-- Optional attribute: Action to take when a rule matches within this filter for ProcessCreate events.
-             "include": Only events matching a rule in this filter are included.
-             "exclude": Events matching a rule in this filter are excluded (all other ProcessCreate events are included, unless excluded by other filters). -->
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
-        <!-- Optional attribute: Default action if no rule matches within this filter for ProcessCreate events.
-             "include": If no rule matches, include the event (unless excluded by other filters or default exclude at higher level).
-             "exclude": If no rule matches, exclude the event (default behavior if not specified and no other filters include the event). -->
     </xs:complexType>
-
-    <!-- ... (Similar Filter Types for FileCreateTimeFilterType, NetworkConnectFilterType, ProcessTerminateFilterType, etc. -  Comments are added for ProcessCreateFilterType as example) ... -->
 
     <xs:complexType name="FileCreateTimeFilterType">
         <xs:sequence>
@@ -510,7 +317,6 @@
             <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="PreviousCreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -550,7 +356,6 @@
             <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -589,7 +394,6 @@
             <xs:element name="Signed" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Signature" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="SignatureStatus" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -610,8 +414,6 @@
             <xs:element name="StartAddress" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="StartModule" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="StartFunction" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="SourceUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="TargetUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -626,7 +428,6 @@
             <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Device" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -646,8 +447,8 @@
             <xs:element name="TargetImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="GrantedAccess" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="CallTrace" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="SourceUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="TargetUser" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceProcessName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetProcessName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -663,7 +464,6 @@
             <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -679,7 +479,6 @@
             <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="TargetObject" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Details" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="NewName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
@@ -699,7 +498,6 @@
             <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Hash" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Contents" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -715,7 +513,6 @@
             <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="PipeName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -779,7 +576,6 @@
             <xs:element name="QueryStatus" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="QueryResults" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -815,7 +611,6 @@
             <xs:element name="ClientInfo" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Archived" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -832,7 +627,6 @@
             <xs:element name="Type" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="TargetProcessCommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="ProcessAccessMask" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
@@ -855,119 +649,53 @@
         <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
     </xs:complexType>
 
-    <xs:complexType name="FileBlockExecutableFilterType">
-        <xs:sequence>
-             <xs:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
-        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
-    </xs:complexType>
-
-    <xs:complexType name="FileBlockShreddingFilterType">
-        <xs:sequence>
-             <xs:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="IsExecutable" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
-        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
-    </xs:complexType>
-
-    <xs:complexType name="FileExecutableDetectedFilterType">
-        <xs:sequence>
-             <xs:element name="Rule" type="RuleType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
-        </xs:sequence>
-        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
-        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
-    </xs:complexType>
-
 
     <xs:complexType name="CheckRevocationType">
-        <!-- Type for elements like <CaptureClipboard> and <CheckRevocation>, which are empty elements.
-             These elements are boolean flags represented by their presence or absence in the configuration. -->
         <xs:sequence/> <!- - Empty element -->
     </xs:complexType>
 
-    <!-- ========================= Common Types ========================= -->
-    <!-- These types are reused across different filter definitions.
-         They define common structures and simple types used for rule conditions and matching actions. -->
-
+    <!-- Common Types -->
     <xs:complexType name="ConditionStringType">
-        <!-- Complex type for elements that represent condition-based string values (e.g., RuleName, Image, etc.).
-             Used for defining conditions on string-based event properties in rules and filters. -->
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="condition" type="ConditionType" default="is" use="optional"/>
-                <!-- Optional attribute: Condition type for the string value (e.g., "is", "contains", "begin with"). Defaults to "is".
-                     Defines how the string value should be matched against the event property. -->
                 <xs:attribute name="name" type="xs:string" use="optional"/>
-                <!-- Optional attribute: Name for the condition (for rule identification and logging).
-                     Allows you to name a specific condition for easier rule identification in logs (e.g., rule match events). -->
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
     <xs:simpleType name="ConditionType">
-        <!-- Simple type defining the allowed values for the 'condition' attribute.
-             Lists the valid condition types that can be used for filtering event properties. -->
         <xs:restriction base="xs:string">
-            <xs:enumeration value="is"/> <!-- Default, values are equals (case-insensitive). -->
-            <xs:enumeration value="is not"/> <!-- Values are different (case-insensitive). -->
-            <xs:enumeration value="contains"/> <!-- The field contains this value (case-insensitive). -->
-            <xs:enumeration value="contains any"/> <!-- The field contains any of the ; delimited values (case-insensitive). -->
-            <xs:enumeration value="is any"/> <!-- The field is one of the ; delimited values (case-insensitive). -->
-            <xs:enumeration value="contains all"/> <!-- The field contains all of the ; delimited values (case-insensitive). -->
-            <xs:enumeration value="excludes"/> <!-- The field does not contain this value (case-insensitive). -->
-            <xs:enumeration value="excludes any"/> <!-- The field does not contain one or more of the ; delimited values (case-insensitive). -->
-            <xs:enumeration value="excludes all"/> <!-- The field does not contain any of the ; delimited values (case-insensitive). -->
-            <xs:enumeration value="begin with"/> <!-- The field begins with this value (case-insensitive). -->
-            <xs:enumeration value="not begin with"/> <!-- The field does not begin with this value (case-insensitive). -->
-            <xs:enumeration value="end with"/> <!-- The field ends with this value (case-insensitive). -->
-            <xs:enumeration value="not end with"/> <!-- The field does not end with this value (case-insensitive). -->
-            <xs:enumeration value="less than"/> <!-- Lexicographical comparison is less than zero (case-insensitive). -->
-            <xs:enumeration value="more than"/> <!-- Lexicographical comparison is more than zero (case-insensitive). -->
-            <xs:enumeration value="image"/> <!-- Match an image path (full path or only image name). For example: lsass.exe will match c:\windows\system32\lsass.exe (case-insensitive). -->
+            <xs:enumeration value="is"/>
+            <xs:enumeration value="is not"/>
+            <xs:enumeration value="contains"/>
+            <xs:enumeration value="contains any"/>
+            <xs:enumeration value="is any"/>
+            <xs:enumeration value="contains all"/>
+            <xs:enumeration value="excludes"/>
+            <xs:enumeration value="excludes any"/>
+            <xs:enumeration value="excludes all"/>
+            <xs:enumeration value="begin with"/>
+            <xs:enumeration value="not begin with"/>
+            <xs:enumeration value="end with"/>
+            <xs:enumeration value="not end with"/>
+            <xs:enumeration value="less than"/>
+            <xs:enumeration value="more than"/>
+            <xs:enumeration value="image"/>
         </xs:restriction>
     </xs:simpleType>
 
     <xs:simpleType name="OnMatchType">
-        <!-- Simple type defining allowed values for 'onmatch' attribute (include/exclude rule matches).
-             Specifies the action to take when a rule within a filter matches an event. -->
         <xs:restriction base="xs:string">
-            <xs:enumeration value="include"/> <!-- Only events that match a rule with 'onmatch="include"' are included. -->
-            <xs:enumeration value="exclude"/> <!-- Events that match a rule with 'onmatch="exclude"' are excluded. -->
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
         </xs:restriction>
     </xs:simpleType>
 
     <xs:simpleType name="DefaultMatchType">
-        <!-- Simple type defining allowed values for 'default' attribute (include/exclude default action).
-             Specifies the default action for a filter if no rule within that filter matches an event. -->
         <xs:restriction base="xs:string">
-            <xs:enumeration value="include"/> <!-- If no rule matches, include the event (unless excluded by other filters or default exclude at higher level). -->
-            <xs:enumeration value="exclude"/> <!-- If no rule matches, exclude the event (default behavior if not specified and no other filters include the event). -->
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
         </xs:restriction>
     </xs:simpleType>
 

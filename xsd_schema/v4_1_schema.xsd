@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:element name="manifest" type="manifestType"/>
+
+    <xs:complexType name="manifestType">
+        <xs:sequence>
+            <xs:element name="configuration" type="configurationType"/>
+            <xs:element name="events" type="eventsType"/>
+        </xs:sequence>
+        <xs:attribute name="schemaversion" type="xs:decimal" use="required" fixed="4.1"/>
+    </xs:complexType>
+
+    <xs:complexType name="configurationType">
+        <xs:sequence>
+            <xs:element name="options" type="optionsType"/>
+            <xs:element name="filters" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="optionsType">
+        <xs:sequence>
+            <xs:element name="option" type="optionType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="optionType">
+        <xs:attribute name="switch" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="argument" type="argumentType" use="required"/>
+        <xs:attribute name="noconfig" type="xs:boolean" use="optional"/>
+        <xs:attribute name="exclusive" type="xs:boolean" use="optional"/>
+        <xs:attribute name="rule" type="xs:boolean" use="optional"/>
+        <xs:attribute name="forceconfig" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="argumentType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="optional"/>
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="required"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:complexType name="eventsType">
+        <xs:sequence>
+            <xs:element name="event" type="eventType" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="eventType">
+        <xs:sequence>
+            <xs:element name="data" type="dataType" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:unsignedByte" use="required"/>
+        <xs:attribute name="level" type="xs:string" use="required"/>
+        <xs:attribute name="template" type="xs:string" use="required"/>
+        <xs:attribute name="version" type="xs:unsignedByte" use="required"/>
+        <xs:attribute name="rulename" type="xs:string" use="optional"/>
+        <xs:attribute name="ruledefault" type="ruleDefaultType" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="ruleDefaultType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="dataType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="inType" type="xs:string" use="required"/>
+        <xs:attribute name="outType" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+
+    <!-- Sysmon v4.1 Events -->
+
+    <xs:element name="Sysmon" type="SysmonFilterConfigType"/>
+
+    <xs:complexType name="SysmonFilterConfigType">
+        <xs:sequence>
+            <xs:element name="EventFiltering" type="EventFilteringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="HashAlgorithms" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessAccessConfig" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CheckRevocation" type="CheckRevocationType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="PipeMonitoringConfig" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DriverName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="schemaversion" type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="EventFilteringType">
+        <xs:sequence>
+            <xs:element name="ProcessCreate" type="ProcessCreateFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="FileCreateTime" type="FileCreateTimeFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="NetworkConnect" type="NetworkConnectFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessTerminate" type="ProcessTerminateFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DriverLoad" type="DriverLoadFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ImageLoad" type="ImageLoadFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CreateRemoteThread" type="CreateRemoteThreadFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="RawAccessRead" type="RawAccessReadFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessAccess" type="ProcessAccessFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="FileCreate" type="FileCreateFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="RegistryEvent" type="RegistryEventFilterType" minOccurs="0" maxOccurs="3"/> <!-- DTD has RegistryEvent 3 times -->
+            <xs:element name="FileCreateStreamHash" type="FileCreateStreamHashFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="PipeEvent" type="PipeEventFilterType" minOccurs="0" maxOccurs="2"/> <!-- DTD has PipeEvent 2 times -->
+            <xs:element name="WmiEventFilter" type="WmiEventFilterFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="WmiEventConsumer" type="WmiEventConsumerFilterType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="WmiEventBinding" type="WmiEventBindingFilterType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Filter Types for each event -->
+    <xs:complexType name="ProcessCreateFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="FileVersion" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Description" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Product" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Company" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CurrentDirectory" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="LogonGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="LogonId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TerminalSessionId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="IntegrityLevel" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ParentProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ParentProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ParentImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ParentCommandLine" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="FileCreateTimeFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="PreviousCreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="NetworkConnectFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Protocol" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Initiated" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceIsIpv6" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceIp" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceHostname" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourcePort" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourcePortName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DestinationIsIpv6" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DestinationIp" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DestinationHostname" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DestinationPort" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="DestinationPortName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessTerminateFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="DriverLoadFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ImageLoaded" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Signed" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Signature" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SignatureStatus" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="ImageLoadFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ImageLoaded" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="FileVersion" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Description" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Product" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Company" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Hashes" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Signed" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Signature" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SignatureStatus" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="CreateRemoteThreadFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="NewThreadId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="StartAddress" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="StartModule" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="StartFunction" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="RawAccessReadFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Device" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessAccessFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceProcessGUID" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceThreadId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SourceImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetProcessGUID" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetImage" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="GrantedAccess" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CallTrace" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="FileCreateFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="RegistryEventFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EventType" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetObject" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Details" type="ConditionStringType" minOccurs="0" maxOccurs="1"/> <!-- For Registry Set Value -->
+            <xs:element name="NewName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>   <!-- For Registry Rename -->
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="FileCreateStreamHashFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TargetFilename" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="CreationUtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Hash" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="PipeEventFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessGuid" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ProcessId" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="PipeName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Image" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="WmiEventFilterFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EventType" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Operation" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EventNamespace" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Name" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Query" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="WmiEventConsumerFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EventType" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Operation" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Name" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Type" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Destination" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="WmiEventBindingFilterType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EventType" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="UtcTime" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Operation" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="User" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Consumer" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Filter" type="ConditionStringType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:complexType>
+
+
+    <xs:complexType name="CheckRevocationType">
+        <xs:sequence/> <!- - Empty element -->
+    </xs:complexType>
+
+    <!-- Common Types -->
+    <xs:complexType name="ConditionStringType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="condition" type="ConditionType" default="is" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:simpleType name="ConditionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="is"/>
+            <xs:enumeration value="is not"/>
+            <xs:enumeration value="contains"/>
+            <xs:enumeration value="excludes"/>
+            <xs:enumeration value="begin with"/>
+            <xs:enumeration value="end with"/>
+            <xs:enumeration value="less than"/>
+            <xs:enumeration value="more than"/>
+            <xs:enumeration value="image"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="OnMatchType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="DefaultMatchType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
