@@ -1,0 +1,195 @@
+--- schema_v4.70.xml
++++ schema_v4.81.xml
+@@ -1,5 +1,5 @@
+-<manifest schemaversion="4.70"
+-          binaryversion="15.0">
++<manifest schemaversion="4.81"
++          binaryversion="16">
+     <configuration>
+         <options>
+             <!-- Command-line only options -->
+@@ -92,6 +92,8 @@
+             <option switch="r"
+                     name="CheckRevocation"
+                     argument="optional" />
++            <option name="FieldSizes"
++                    argument="required" />
+         </options>
+         <filters default="is">is,is not,contains,contains any,is any,contains all,excludes,excludes any,excludes all,begin with,not begin with,end with,not end with,less than,more than,image</filters>
+     </configuration>
+@@ -179,6 +181,9 @@
+             <data name="ParentCommandLine"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="ParentUser"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_FILE_TIME"
+                value="2"
+@@ -207,6 +212,9 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+             <data name="PreviousCreationUtcTime"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="User"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+@@ -304,6 +312,9 @@
+             <data name="Image"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_DRIVER_LOAD"
+                value="6"
+@@ -383,6 +394,9 @@
+             <data name="SignatureStatus"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_CREATE_REMOTE_THREAD"
+                value="8"
+@@ -423,6 +437,12 @@
+             <data name="StartFunction"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="SourceUser"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="TargetUser"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_RAWACCESS_READ"
+                value="9"
+@@ -447,6 +467,9 @@
+             <data name="Device"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_ACCESS_PROCESS"
+                value="10"
+@@ -481,6 +504,12 @@
+             <data name="GrantedAccess"
+                   inType="win:HexInt32" />
+             <data name="CallTrace"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="SourceUser"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="TargetUser"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+@@ -511,6 +540,9 @@
+             <data name="CreationUtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_REG_KEY"
+                value="12"
+@@ -539,6 +571,9 @@
+             <data name="TargetObject"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_REG_SETVALUE"
+                value="13"
+@@ -570,6 +605,9 @@
+             <data name="Details"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_REG_NAME"
+                value="14"
+@@ -601,6 +639,9 @@
+             <data name="NewName"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_FILE_CREATE_STREAM_HASH"
+                value="15"
+@@ -635,6 +676,9 @@
+             <data name="Contents"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_SERVICE_CONFIGURATION_CHANGE"
+                value="16"
+@@ -678,6 +722,9 @@
+             <data name="Image"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_CONNECT_NAMEDPIPE"
+                value="18"
+@@ -706,6 +753,9 @@
+             <data name="Image"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_WMI_FILTER"
+                value="19"
+@@ -830,6 +880,9 @@
+             <data name="Image"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_FILE_DELETE"
+                value="23"
+@@ -897,6 +950,9 @@
+             <data name="Archived"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_PROCESS_IMAGE_TAMPERING"
+                value="25"
+@@ -921,6 +977,9 @@
+             <data name="Type"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+         </event>
+         <event name="SYSMONEVENT_FILE_DELETE_DETECTED"
+                value="26"

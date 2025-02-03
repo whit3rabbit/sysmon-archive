@@ -1,0 +1,271 @@
+--- schema_v3.4.xml
++++ schema_v4.1.xml
+@@ -1,5 +1,5 @@
+-<manifest schemaversion="3.4"
+-          binaryversion="1.01">
++<manifest schemaversion="4.1"
++          binaryversion="8.00">
+     <configuration>
+         <options>
+             <!-- Command-line only options -->
+@@ -27,6 +27,11 @@
+                     name="DebugMode"
+                     argument="none"
+                     noconfig="true" />
++            <option switch="s"
++                    name="PrintSchema"
++                    argument="optional"
++                    noconfig="true"
++                    exclusive="true" />
+             <option switch="nologo"
+                     name="NoLogo"
+                     argument="none"
+@@ -51,6 +56,9 @@
+                     name="ImageLoad"
+                     argument="optional"
+                     rule="true" />
++            <option switch="d"
++                    name="DriverName"
++                    argument="required" />
+             <option switch="k"
+                     name="ProcessAccess"
+                     argument="required"
+@@ -90,15 +98,30 @@
+                rulename="ProcessCreate"
+                ruledefault="include"
+                version="5">
+-            <data name="UtcTime"
+-                  inType="win:UnicodeString"
+-                  outType="xs:string" />
+-            <data name="ProcessGuid"
+-                  inType="win:GUID" />
+-            <data name="ProcessId"
+-                  inType="win:UInt32"
+-                  outType="win:PID" />
+-            <data name="Image"
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="UtcTime"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="ProcessGuid"
++                  inType="win:GUID" />
++            <data name="ProcessId"
++                  inType="win:UInt32"
++                  outType="win:PID" />
++            <data name="Image"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="FileVersion"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Description"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Product"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Company"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+             <data name="CommandLine"
+@@ -141,6 +164,9 @@
+                rulename="FileCreateTime"
+                ruledefault="include"
+                version="4">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -168,6 +194,9 @@
+                template="Network connection detected"
+                rulename="NetworkConnect"
+                version="5">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -239,6 +268,9 @@
+                rulename="ProcessTerminate"
+                ruledefault="include"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -258,6 +290,9 @@
+                rulename="DriverLoad"
+                ruledefault="include"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -283,6 +318,9 @@
+                template="Image loaded"
+                rulename="ImageLoad"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -295,6 +333,18 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+             <data name="ImageLoaded"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="FileVersion"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Description"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Product"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Company"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+             <data name="Hashes"
+@@ -316,6 +366,9 @@
+                template="CreateRemoteThread detected"
+                rulename="CreateRemoteThread"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -353,6 +406,9 @@
+                template="RawAccessRead detected"
+                rulename="RawAccessRead"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -374,6 +430,9 @@
+                template="Process accessed"
+                rulename="ProcessAccess"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -408,6 +467,9 @@
+                rulename="FileCreate"
+                ruledefault="include"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -433,6 +495,9 @@
+                rulename="RegistryEvent"
+                ruledefault="include"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="EventType"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -458,6 +523,9 @@
+                rulename="RegistryEvent"
+                ruledefault="include"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="EventType"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -486,6 +554,9 @@
+                rulename="RegistryEvent"
+                ruledefault="include"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="EventType"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -514,6 +585,9 @@
+                rulename="FileCreateStreamHash"
+                ruledefault="include"
+                version="2">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -557,6 +631,9 @@
+                rulename="PipeEvent"
+                ruledefault="exclude"
+                version="1">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -579,6 +656,9 @@
+                rulename="PipeEvent"
+                ruledefault="exclude"
+                version="1">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="UtcTime"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -601,6 +681,9 @@
+                rulename="WmiEvent"
+                ruledefault="exclude"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="EventType"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -630,6 +713,9 @@
+                rulename="WmiEvent"
+                ruledefault="exclude"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="EventType"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+@@ -659,6 +745,9 @@
+                rulename="WmiEvent"
+                ruledefault="exclude"
+                version="3">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
+             <data name="EventType"
+                   inType="win:UnicodeString"
+                   outType="xs:string" />

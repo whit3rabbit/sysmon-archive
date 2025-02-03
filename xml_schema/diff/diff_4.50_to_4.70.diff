@@ -1,0 +1,301 @@
+--- schema_v4.50.xml
++++ schema_v4.70.xml
+@@ -1,5 +1,5 @@
+-<manifest schemaversion="4.50"
+-          binaryversion="13.0">
++<manifest schemaversion="4.70"
++          binaryversion="15.0">
+     <configuration>
+         <options>
+             <!-- Command-line only options -->
+@@ -31,6 +31,10 @@
+             <option switch="t"
+                     name="DebugMode"
+                     argument="optional"
++                    noconfig="true" />
++            <option switch="service"
++                    name="Service"
++                    argument="none"
+                     noconfig="true" />
+             <option switch="s"
+                     name="PrintSchema"
+@@ -89,10 +93,10 @@
+                     name="CheckRevocation"
+                     argument="optional" />
+         </options>
+-        <filters default="is">is,is not,contains,contains any,is any,contains all,excludes,excludes any,excludes all,begin with,end with,less than,more than,image</filters>
++        <filters default="is">is,is not,contains,contains any,is any,contains all,excludes,excludes any,excludes all,begin with,not begin with,end with,not end with,less than,more than,image</filters>
+     </configuration>
+     <events>
+-        <event name="SYSMON_ERROR"
++        <event name="SYSMONEVENT_ERROR"
+                value="255"
+                level="Error"
+                template="Error report"
+@@ -107,7 +111,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_CREATE_PROCESS"
++        <event name="SYSMONEVENT_CREATE_PROCESS"
+                value="1"
+                level="Informational"
+                template="Process Create"
+@@ -176,7 +180,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_FILE_TIME"
++        <event name="SYSMONEVENT_FILE_TIME"
+                value="2"
+                level="Informational"
+                template="File creation time changed"
+@@ -206,7 +210,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_NETWORK_CONNECT"
++        <event name="SYSMONEVENT_NETWORK_CONNECT"
+                value="3"
+                level="Informational"
+                template="Network connection detected"
+@@ -261,7 +265,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_SERVICE_STATE_CHANGE"
++        <event name="SYSMONEVENT_SERVICE_STATE_CHANGE"
+                value="4"
+                level="Informational"
+                template="Sysmon service state changed"
+@@ -279,7 +283,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_PROCESS_TERMINATE"
++        <event name="SYSMONEVENT_PROCESS_TERMINATE"
+                value="5"
+                level="Informational"
+                template="Process terminated"
+@@ -301,7 +305,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_DRIVER_LOAD"
++        <event name="SYSMONEVENT_DRIVER_LOAD"
+                value="6"
+                level="Informational"
+                template="Driver loaded"
+@@ -329,7 +333,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_IMAGE_LOAD"
++        <event name="SYSMONEVENT_IMAGE_LOAD"
+                value="7"
+                level="Informational"
+                template="Image loaded"
+@@ -380,7 +384,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_CREATE_REMOTE_THREAD"
++        <event name="SYSMONEVENT_CREATE_REMOTE_THREAD"
+                value="8"
+                level="Informational"
+                template="CreateRemoteThread detected"
+@@ -420,7 +424,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_RAWACCESS_READ"
++        <event name="SYSMONEVENT_RAWACCESS_READ"
+                value="9"
+                level="Informational"
+                template="RawAccessRead detected"
+@@ -444,7 +448,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_ACCESS_PROCESS"
++        <event name="SYSMONEVENT_ACCESS_PROCESS"
+                value="10"
+                level="Informational"
+                template="Process accessed"
+@@ -480,7 +484,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_FILE_CREATE"
++        <event name="SYSMONEVENT_FILE_CREATE"
+                value="11"
+                level="Informational"
+                template="File created"
+@@ -508,7 +512,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_REG_KEY"
++        <event name="SYSMONEVENT_REG_KEY"
+                value="12"
+                level="Informational"
+                template="Registry object added or deleted"
+@@ -536,7 +540,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_REG_SETVALUE"
++        <event name="SYSMONEVENT_REG_SETVALUE"
+                value="13"
+                level="Informational"
+                template="Registry value set"
+@@ -567,7 +571,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_REG_NAME"
++        <event name="SYSMONEVENT_REG_NAME"
+                value="14"
+                level="Informational"
+                template="Registry object renamed"
+@@ -598,7 +602,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_FILE_CREATE_STREAM_HASH"
++        <event name="SYSMONEVENT_FILE_CREATE_STREAM_HASH"
+                value="15"
+                level="Informational"
+                template="File stream created"
+@@ -632,7 +636,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_SERVICE_CONFIGURATION_CHANGE"
++        <event name="SYSMONEVENT_SERVICE_CONFIGURATION_CHANGE"
+                value="16"
+                level="Informational"
+                template="Sysmon config state changed"
+@@ -647,7 +651,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_CREATE_NAMEDPIPE"
++        <event name="SYSMONEVENT_CREATE_NAMEDPIPE"
+                value="17"
+                level="Informational"
+                template="Pipe Created"
+@@ -675,7 +679,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_CONNECT_NAMEDPIPE"
++        <event name="SYSMONEVENT_CONNECT_NAMEDPIPE"
+                value="18"
+                level="Informational"
+                template="Pipe Connected"
+@@ -703,7 +707,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_WMI_FILTER"
++        <event name="SYSMONEVENT_WMI_FILTER"
+                value="19"
+                level="Informational"
+                template="WmiEventFilter activity detected"
+@@ -735,7 +739,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_WMI_CONSUMER"
++        <event name="SYSMONEVENT_WMI_CONSUMER"
+                value="20"
+                level="Informational"
+                template="WmiEventConsumer activity detected"
+@@ -767,7 +771,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_WMI_BINDING"
++        <event name="SYSMONEVENT_WMI_BINDING"
+                value="21"
+                level="Informational"
+                template="WmiEventConsumerToFilter activity detected"
+@@ -796,7 +800,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_DNS_QUERY"
++        <event name="SYSMONEVENT_DNS_QUERY"
+                value="22"
+                level="Informational"
+                template="Dns query"
+@@ -827,10 +831,10 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_FILE_DELETE"
++        <event name="SYSMONEVENT_FILE_DELETE"
+                value="23"
+                level="Informational"
+-               template="File Delete"
++               template="File Delete archived"
+                rulename="FileDelete"
+                version="5">
+             <data name="RuleName"
+@@ -862,7 +866,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_CLIPBOARD"
++        <event name="SYSMONEVENT_CLIPBOARD"
+                value="24"
+                level="Informational"
+                template="Clipboard changed"
+@@ -894,7 +898,7 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
+-        <event name="SYSMON_PROCESS_IMAGE_TAMPERING"
++        <event name="SYSMONEVENT_PROCESS_IMAGE_TAMPERING"
+                value="25"
+                level="Informational"
+                template="Process Tampering"
+@@ -918,5 +922,37 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
++        <event name="SYSMONEVENT_FILE_DELETE_DETECTED"
++               value="26"
++               level="Informational"
++               template="File Delete logged"
++               rulename="FileDeleteDetected"
++               version="5">
++            <data name="RuleName"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="UtcTime"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="ProcessGuid"
++                  inType="win:GUID" />
++            <data name="ProcessId"
++                  inType="win:UInt32"
++                  outType="win:PID" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Image"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="TargetFilename"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Hashes"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="IsExecutable"
++                  inType="win:Boolean" />
++        </event>
+     </events>
+ </manifest>

@@ -1,0 +1,98 @@
+--- schema_v3.3.xml
++++ schema_v3.4.xml
+@@ -1,4 +1,4 @@
+-<manifest schemaversion="3.3"
++<manifest schemaversion="3.4"
+           binaryversion="1.01">
+     <configuration>
+         <options>
+@@ -594,5 +594,89 @@
+                   inType="win:UnicodeString"
+                   outType="xs:string" />
+         </event>
++        <event name="SYSMON_WMI_FILTER"
++               value="19"
++               level="Informational"
++               template="WmiEventFilter activity detected"
++               rulename="WmiEvent"
++               ruledefault="exclude"
++               version="3">
++            <data name="EventType"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="UtcTime"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Operation"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="EventNamespace"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Name"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Query"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++        </event>
++        <event name="SYSMON_WMI_CONSUMER"
++               value="20"
++               level="Informational"
++               template="WmiEventConsumer activity detected"
++               rulename="WmiEvent"
++               ruledefault="exclude"
++               version="3">
++            <data name="EventType"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="UtcTime"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Operation"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Name"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Type"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Destination"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++        </event>
++        <event name="SYSMON_WMI_BINDING"
++               value="21"
++               level="Informational"
++               template="WmiEventConsumerToFilter activity detected"
++               rulename="WmiEvent"
++               ruledefault="exclude"
++               version="3">
++            <data name="EventType"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="UtcTime"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Operation"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="User"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Consumer"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++            <data name="Filter"
++                  inType="win:UnicodeString"
++                  outType="xs:string" />
++        </event>
+     </events>
+ </manifest>

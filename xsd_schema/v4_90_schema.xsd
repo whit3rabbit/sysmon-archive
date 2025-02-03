@@ -1,0 +1,1147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:element name="Sysmon">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="EventFiltering">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded">
+                            <xs:element name="RuleGroup" type="RuleGroupType"/>
+                            <xs:element name="ProcessCreate" type="ProcessCreateType"/>
+                            <xs:element name="FileCreateTime" type="FileCreateTimeType"/>
+                            <xs:element name="NetworkConnect" type="NetworkConnectType"/>
+                            <xs:element name="ProcessTerminate" type="ProcessTerminateType"/>
+                            <xs:element name="DriverLoad" type="DriverLoadType"/>
+                            <xs:element name="ImageLoad" type="ImageLoadType"/>
+                            <xs:element name="CreateRemoteThread" type="CreateRemoteThreadType"/>
+                            <xs:element name="RawAccessRead" type="RawAccessReadType"/>
+                            <xs:element name="ProcessAccess" type="ProcessAccessType"/>
+                            <xs:element name="FileCreate" type="FileCreateType"/>
+                            <xs:element name="RegistryEvent" type="RegistryEventType"/>
+                            <xs:element name="FileCreateStreamHash" type="FileCreateStreamHashType"/>
+                            <xs:element name="PipeEvent" type="PipeEventType"/>
+                            <xs:element name="WmiEvent" type="WmiEventType"/>
+                            <xs:element name="DnsQuery" type="DnsQueryType"/>
+                            <xs:element name="FileDelete" type="FileDeleteType"/>
+                            <xs:element name="ClipboardChange" type="ClipboardChangeType"/>
+                            <xs:element name="ProcessTampering" type="ProcessTamperingType"/>
+                            <xs:element name="FileDeleteDetected" type="FileDeleteDetectedType"/>
+                            <xs:element name="FileBlockExecutable" type="FileBlockExecutableType"/>
+                            <xs:element name="FileBlockShredding" type="FileBlockShreddingType"/>
+                            <xs:element name="FileExecutableDetected" type="FileExecutableDetectedType"/>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="ArchiveDirectory" type="xs:string" minOccurs="0"/>
+                <xs:element name="CaptureClipboard" minOccurs="0">
+                    <xs:complexType/>
+                </xs:element>
+                <xs:element name="DriverName" type="xs:string" minOccurs="0"/>
+                <xs:element name="PipeMonitoringConfig" type="xs:string" minOccurs="0"/>
+                <xs:element name="HashAlgorithms" type="xs:string" minOccurs="0"/>
+                <xs:element name="DnsLookup" type="xs:string" minOccurs="0"/>
+                <xs:element name="ProcessAccessConfig" type="xs:string" minOccurs="0"/>
+                <xs:element name="CheckRevocation" type="xs:string" minOccurs="0"/>
+                <xs:element name="FieldSizes" type="xs:string" minOccurs="0"/>
+            </xs:choice>
+            <xs:attribute name="schemaversion" type="xs:decimal" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="RuleGroupType">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="ProcessCreate" type="ProcessCreateType"/>
+            <xs:element name="FileCreateTime" type="FileCreateTimeType"/>
+            <xs:element name="NetworkConnect" type="NetworkConnectType"/>
+            <xs:element name="ProcessTerminate" type="ProcessTerminateType"/>
+            <xs:element name="DriverLoad" type="DriverLoadType"/>
+            <xs:element name="ImageLoad" type="ImageLoadType"/>
+            <xs:element name="CreateRemoteThread" type="CreateRemoteThreadType"/>
+            <xs:element name="RawAccessRead" type="RawAccessReadType"/>
+            <xs:element name="ProcessAccess" type="ProcessAccessType"/>
+            <xs:element name="FileCreate" type="FileCreateType"/>
+            <xs:element name="RegistryEvent" type="RegistryEventType"/>
+            <xs:element name="FileCreateStreamHash" type="FileCreateStreamHashType"/>
+            <xs:element name="PipeEvent" type="PipeEventType"/>
+            <xs:element name="WmiEvent" type="WmiEventType"/>
+            <xs:element name="DnsQuery" type="DnsQueryType"/>
+            <xs:element name="FileDelete" type="FileDeleteType"/>
+            <xs:element name="ClipboardChange" type="ClipboardChangeType"/>
+            <xs:element name="ProcessTampering" type="ProcessTamperingType"/>
+            <xs:element name="FileDeleteDetected" type="FileDeleteDetectedType"/>
+            <xs:element name="FileBlockExecutable" type="FileBlockExecutableType"/>
+            <xs:element name="FileBlockShredding" type="FileBlockShreddingType"/>
+            <xs:element name="FileExecutableDetected" type="FileExecutableDetectedType"/>
+        </xs:choice>
+        <xs:attribute name="groupRelation" type="GroupRelationType" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="GroupRelationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="and"/>
+            <xs:enumeration value="or"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:attributeGroup name="ruleAttributes">
+        <xs:attribute name="onmatch" type="OnMatchType" use="optional"/>
+        <xs:attribute name="default" type="DefaultMatchType" use="optional"/>
+    </xs:attributeGroup>
+
+    <xs:simpleType name="OnMatchType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="DefaultMatchType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="include"/>
+            <xs:enumeration value="exclude"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Base type for rule data elements -->
+    <xs:complexType name="RuleDataType" abstract="true">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="condition" type="ConditionType" default="is" use="optional"/>
+                <xs:attribute name="name" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:simpleType name="ConditionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="is"/>
+            <xs:enumeration value="is not"/>
+            <xs:enumeration value="contains"/>
+            <xs:enumeration value="contains any"/>
+            <xs:enumeration value="is any"/>
+            <xs:enumeration value="contains all"/>
+            <xs:enumeration value="excludes"/>
+            <xs:enumeration value="excludes any"/>
+            <xs:enumeration value="excludes all"/>
+            <xs:enumeration value="begin with"/>
+            <xs:enumeration value="not begin with"/>
+            <xs:enumeration value="end with"/>
+            <xs:enumeration value="not end with"/>
+            <xs:enumeration value="less than"/>
+            <xs:enumeration value="more than"/>
+            <xs:enumeration value="image"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!-- Event Type Definitions -  Each event type now extends ruleAttributes and contains its specific data elements -->
+
+    <xs:complexType name="ProcessCreateType">
+        <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+             <xs:sequence>
+                    <xs:element name="Rule" type="ProcessCreateRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessCreateRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="FileVersion" type="FileVersionType" minOccurs="0"/>
+            <xs:element name="Description" type="DescriptionType" minOccurs="0"/>
+            <xs:element name="Product" type="ProductType" minOccurs="0"/>
+            <xs:element name="Company" type="CompanyType" minOccurs="0"/>
+            <xs:element name="OriginalFileName" type="OriginalFileNameType" minOccurs="0"/>
+            <xs:element name="CommandLine" type="CommandLineType" minOccurs="0"/>
+            <xs:element name="CurrentDirectory" type="CurrentDirectoryType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="LogonGuid" type="LogonGuidType" minOccurs="0"/>
+            <xs:element name="LogonId" type="LogonIdType" minOccurs="0"/>
+            <xs:element name="TerminalSessionId" type="TerminalSessionIdType" minOccurs="0"/>
+            <xs:element name="IntegrityLevel" type="IntegrityLevelType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="ParentProcessGuid" type="ParentProcessGuidType" minOccurs="0"/>
+            <xs:element name="ParentProcessId" type="ParentProcessIdType" minOccurs="0"/>
+            <xs:element name="ParentImage" type="ParentImageType" minOccurs="0"/>
+            <xs:element name="ParentCommandLine" type="ParentCommandLineType" minOccurs="0"/>
+            <xs:element name="ParentUser" type="ParentUserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+     <!-- Data Element Types -  All data element types are now derived from RuleDataType -->
+    <xs:complexType name="RuleNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="UtcTimeType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessGuidType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessIdType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileVersionType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DescriptionType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProductType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CompanyType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="OriginalFileNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CommandLineType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CurrentDirectoryType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="UserType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="LogonGuidType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="LogonIdType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TerminalSessionIdType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="IntegrityLevelType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HashesType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ParentProcessGuidType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ParentProcessIdType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ParentImageType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ParentCommandLineType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ParentUserType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+     <!-- Remaining Event Type Definitions - You would need to create these similarly, following the DTD structure -->
+    <xs:complexType name="FileCreateTimeType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                <xs:sequence>
+                    <xs:element name="Rule" type="FileCreateTimeRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileCreateTimeRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="CreationUtcTime" type="CreationUtcTimeType" minOccurs="0"/>
+            <xs:element name="PreviousCreationUtcTime" type="PreviousCreationUtcTimeType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="NetworkConnectType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="NetworkConnectRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="NetworkConnectRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Protocol" type="ProtocolType" minOccurs="0"/>
+            <xs:element name="Initiated" type="InitiatedType" minOccurs="0"/>
+            <xs:element name="SourceIsIpv6" type="SourceIsIpv6Type" minOccurs="0"/>
+            <xs:element name="SourceIp" type="SourceIpType" minOccurs="0"/>
+            <xs:element name="SourceHostname" type="SourceHostnameType" minOccurs="0"/>
+            <xs:element name="SourcePort" type="SourcePortType" minOccurs="0"/>
+            <xs:element name="SourcePortName" type="SourcePortNameType" minOccurs="0"/>
+            <xs:element name="DestinationIsIpv6" type="DestinationIsIpv6Type" minOccurs="0"/>
+            <xs:element name="DestinationIp" type="DestinationIpType" minOccurs="0"/>
+            <xs:element name="DestinationHostname" type="DestinationHostnameType" minOccurs="0"/>
+            <xs:element name="DestinationPort" type="DestinationPortType" minOccurs="0"/>
+            <xs:element name="DestinationPortName" type="DestinationPortNameType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ProcessTerminateType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                <xs:sequence>
+                    <xs:element name="Rule" type="ProcessTerminateRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessTerminateRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="DriverLoadType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                <xs:sequence>
+                    <xs:element name="Rule" type="DriverLoadRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DriverLoadRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ImageLoaded" type="ImageLoadedType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="Signed" type="SignedType" minOccurs="0"/>
+            <xs:element name="Signature" type="SignatureType" minOccurs="0"/>
+            <xs:element name="SignatureStatus" type="SignatureStatusType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ImageLoadType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="ImageLoadRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageLoadRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="ImageLoaded" type="ImageLoadedType" minOccurs="0"/>
+            <xs:element name="FileVersion" type="FileVersionType" minOccurs="0"/>
+            <xs:element name="Description" type="DescriptionType" minOccurs="0"/>
+            <xs:element name="Product" type="ProductType" minOccurs="0"/>
+            <xs:element name="Company" type="CompanyType" minOccurs="0"/>
+            <xs:element name="OriginalFileName" type="OriginalFileNameType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="Signed" type="SignedType" minOccurs="0"/>
+            <xs:element name="Signature" type="SignatureType" minOccurs="0"/>
+            <xs:element name="SignatureStatus" type="SignatureStatusType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="CreateRemoteThreadType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="CreateRemoteThreadRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CreateRemoteThreadRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="SourceProcessGuid" type="SourceProcessGuidType" minOccurs="0"/>
+            <xs:element name="SourceProcessId" type="SourceProcessIdType" minOccurs="0"/>
+            <xs:element name="SourceImage" type="SourceImageType" minOccurs="0"/>
+            <xs:element name="TargetProcessGuid" type="TargetProcessGuidType" minOccurs="0"/>
+            <xs:element name="TargetProcessId" type="TargetProcessIdType" minOccurs="0"/>
+            <xs:element name="TargetImage" type="TargetImageType" minOccurs="0"/>
+            <xs:element name="NewThreadId" type="NewThreadIdType" minOccurs="0"/>
+            <xs:element name="StartAddress" type="StartAddressType" minOccurs="0"/>
+            <xs:element name="StartModule" type="StartModuleType" minOccurs="0"/>
+            <xs:element name="StartFunction" type="StartFunctionType" minOccurs="0"/>
+            <xs:element name="SourceUser" type="SourceUserType" minOccurs="0"/>
+            <xs:element name="TargetUser" type="TargetUserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="RawAccessReadType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="RawAccessReadRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RawAccessReadRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="Device" type="DeviceType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ProcessAccessType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="ProcessAccessRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessAccessRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="SourceProcessGUID" type="SourceProcessGUIDType" minOccurs="0"/>
+            <xs:element name="SourceProcessId" type="SourceProcessIdType" minOccurs="0"/>
+            <xs:element name="SourceThreadId" type="SourceThreadIdType" minOccurs="0"/>
+            <xs:element name="SourceImage" type="SourceImageType" minOccurs="0"/>
+            <xs:element name="TargetProcessGUID" type="TargetProcessGUIDType" minOccurs="0"/>
+            <xs:element name="TargetProcessId" type="TargetProcessIdType" minOccurs="0"/>
+            <xs:element name="TargetImage" type="TargetImageType" minOccurs="0"/>
+            <xs:element name="GrantedAccess" type="GrantedAccessType" minOccurs="0"/>
+            <xs:element name="CallTrace" type="CallTraceType" minOccurs="0"/>
+            <xs:element name="SourceUser" type="SourceUserType" minOccurs="0"/>
+            <xs:element name="TargetUser" type="TargetUserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileCreateType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileCreateRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileCreateRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="CreationUtcTime" type="CreationUtcTimeType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="RegistryEventType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="RegistryEventRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RegistryEventRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="EventType" type="EventTypeType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetObject" type="TargetObjectType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Details" type="DetailsType" minOccurs="0"/>
+            <xs:element name="NewName" type="NewNameType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileCreateStreamHashType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileCreateStreamHashRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileCreateStreamHashRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="CreationUtcTime" type="CreationUtcTimeType" minOccurs="0"/>
+            <xs:element name="Hash" type="HashType" minOccurs="0"/>
+            <xs:element name="Contents" type="ContentsType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="PipeEventType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="PipeEventRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="PipeEventRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="EventType" type="EventTypeType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="PipeName" type="PipeNameType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="WmiEventType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="WmiEventRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="WmiEventRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="EventType" type="EventTypeType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="Operation" type="OperationType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="EventNamespace" type="EventNamespaceType" minOccurs="0"/>
+            <xs:element name="Name" type="NameType" minOccurs="0"/>
+            <xs:element name="Query" type="QueryType" minOccurs="0"/>
+            <xs:element name="Type" type="TypeType" minOccurs="0"/>
+            <xs:element name="Destination" type="DestinationType" minOccurs="0"/>
+            <xs:element name="Consumer" type="ConsumerType" minOccurs="0"/>
+            <xs:element name="Filter" type="FilterType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="DnsQueryType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="DnsQueryRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DnsQueryRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="QueryName" type="QueryNameType" minOccurs="0"/>
+            <xs:element name="QueryStatus" type="QueryStatusType" minOccurs="0"/>
+            <xs:element name="QueryResults" type="QueryResultsType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileDeleteType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileDeleteRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileDeleteRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="IsExecutable" type="IsExecutableType" minOccurs="0"/>
+            <xs:element name="Archived" type="ArchivedType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ClipboardChangeType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="ClipboardChangeRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ClipboardChangeRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="Session" type="SessionType" minOccurs="0"/>
+            <xs:element name="ClientInfo" type="ClientInfoType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="Archived" type="ArchivedType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ProcessTamperingType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="ProcessTamperingRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProcessTamperingRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="Type" type="TypeType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileDeleteDetectedType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileDeleteDetectedRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileDeleteDetectedRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="IsExecutable" type="IsExecutableType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileBlockExecutableType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileBlockExecutableRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileBlockExecutableRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileBlockShreddingType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileBlockShreddingRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileBlockShreddingRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+            <xs:element name="IsExecutable" type="IsExecutableType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="FileExecutableDetectedType">
+       <xs:complexContent>
+            <xs:extension base="RuleGroupType">
+                 <xs:sequence>
+                    <xs:element name="Rule" type="FileExecutableDetectedRuleType" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="ruleAttributes"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="FileExecutableDetectedRuleType">
+        <xs:sequence>
+            <xs:element name="RuleName" type="RuleNameType" minOccurs="0"/>
+            <xs:element name="UtcTime" type="UtcTimeType" minOccurs="0"/>
+            <xs:element name="ProcessGuid" type="ProcessGuidType" minOccurs="0"/>
+            <xs:element name="ProcessId" type="ProcessIdType" minOccurs="0"/>
+            <xs:element name="User" type="UserType" minOccurs="0"/>
+            <xs:element name="Image" type="ImageType" minOccurs="0"/>
+            <xs:element name="TargetFilename" type="TargetFilenameType" minOccurs="0"/>
+            <xs:element name="Hashes" type="HashesType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <!-- Simple Data Element Types -->
+    <xs:complexType name="TargetFilenameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CreationUtcTimeType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="PreviousCreationUtcTimeType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ProtocolType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="InitiatedType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourceIsIpv6Type">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourceIpType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourceHostnameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourcePortType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourcePortNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DestinationIsIpv6Type">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DestinationIpType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DestinationHostnameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DestinationPortType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DestinationPortNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ImageLoadedType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SignedType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SignatureType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SignatureStatusType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourceProcessGUIDType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SourceThreadIdType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TargetProcessGUIDType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="GrantedAccessType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CallTraceType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="EventTypeType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="TargetObjectType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DetailsType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="NewNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="HashType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ContentsType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="PipeNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="OperationType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="EventNamespaceType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="NameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="QueryType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="QueryNameType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="QueryStatusType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="QueryResultsType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="IsExecutableType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ArchivedType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SessionType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="ClientInfoType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="DeviceType">
+        <xs:complexContent>
+            <xs:extension base="RuleDataType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+</xs:schema>

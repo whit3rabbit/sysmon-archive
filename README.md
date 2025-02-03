@@ -59,6 +59,25 @@ https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
 | v15.11    | [Download](https://web.archive.org/web/20231124172552/https://live.sysinternals.com/Sysmon64.exe) | 0471774b6b783ca524fa5ecc32c95585b6fd4bf9 |      20231124172552 |
 | v15.14    | [Download](https://web.archive.org/web/20240514163028/https://live.sysinternals.com/Sysmon64.exe) | f82ac04c585970f462dd7a8d52a9a7bac23eaffa |      20240514163028 |
 
+## Manifest Versions
+
+Based on the XML we can attribute the Sysmon Versions with the manifest schema versions.
+The schemas can be downloaded from the xml_schema folder. The version_schema_output is the raw output from the sysmon binary using sysmon.exe -s.
+
+| Manifest Schema Version | Sysmon Version                  |
+|-------------------------|--------------------------------|
+| 3.3                     | 6.01                           |
+| 3.4                     | 6.10                           |
+| 4.1                     | 8.00, 8.04                     |
+| 4.21                    | 10.2                           |
+| 4.22                    | 10.41                          |
+| 4.40                    | 12.0, 12.01                    |
+| 4.50                    | 13.01                          |
+| 4.70                    | 13.21                          |
+| 4.81                    | 13.24, 13.34                   |
+| 4.83                    | 14.0, 14.13, 14.16             |
+| 4.90                    | 15.11, 15.14, 15.15            |
+
 ### Description
 
 I created a notebook to download all the pages from live.sysinternals.com and process the downloads.
